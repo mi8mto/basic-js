@@ -5,27 +5,49 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 const chainMaker = {
+  values: [],
   getLength() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    return this.values.length
   },
-  addLink(/* value */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    addLink(value) {
+      this.values.push(value);
+      return this;
   },
-  removeLink(/* position */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    removeLink(position) {
+      const isFractional = (Math.round(position) - position) != 0;
+      const isNumber = typeof(position) == 'number';
+//       console.log(!isFractional, isNumber, position <= this.values.length, position >= 1);
+      if(!isFractional && isNumber && position <= this.values.length && position >= 1) {      
+        this.values = [...this.values.slice(0,position-1),...this.values.slice(position)];
+    } else {
+        this.values = [];
+        throw new Error("You cannot delete an invalid link!");
+    }
+      return this;
   },
-  reverseChain() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+    reverseChain() {
+      this.values = this.values.reverse();
+      return this;
   },
-  finishChain() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
-  }
-};
+    finishChain() {
+      let str = '';
+      this.values.forEach((value,i,arr) => {
+        if(i == 0 && i != arr.length - 1) {
+          str = str + `( ${value} )`;
+        } else if(i == 0 && i == arr.length - 1) {
+          str = str + `( ${value} )`;
+          this.values = [];
+        } else if(i == arr.length - 1) {
+          str = str + `~~( ${value} )`;
+          this.values = [];
+        } else {
+          str = str + `~~( ${value} )`;
+        }
+      });
+//         console.log(str)
+       return str;
+   }
+  };
 
 module.exports = {
   chainMaker
