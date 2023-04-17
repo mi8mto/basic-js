@@ -19,6 +19,8 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
+
+
 class VigenereCipheringMachine {
   constructor(isTrue = true) {
     this.bool = isTrue;
@@ -77,7 +79,7 @@ class VigenereCipheringMachine {
       "Z",
     ];
   }
-  makeFullKey(message, key) {
+  maketotalKey(message, key) {
     let totalKey = "";
     if (key.length < message.length) {
       let count = message.split("").reduce((count, item) => {
@@ -86,12 +88,12 @@ class VigenereCipheringMachine {
         }
         return count;
       }, 0);
-      let totalLengthA = Math.floor(count / key.length);
-      let lastP = count - key.length * totalLengthA;
-      for (let i = 1; i <= totalLengthA; i++) {
+      let fullLengthX = Math.floor(count / key.length);
+      let lastPart = count - key.length * fullLengthX;
+      for (let i = 1; i <= fullLengthX; i++) {
         totalKey = totalKey + key;
       }
-      for (let j = 0; j < lastP; j++) {
+      for (let j = 0; j < lastPart; j++) {
         totalKey = totalKey + key[j];
       }
     } else {
@@ -102,7 +104,7 @@ class VigenereCipheringMachine {
   makeFinishArray(message, totalKey, decrypt = 0) {
     let arrayMessage = message.toUpperCase().split("");
     let arraytotalKey = totalKey.toUpperCase().split("");
-
+    console.log(arraytotalKey, "array0");
     if (decrypt === "decrypt") {
       return arrayMessage.map((item, i) => {
         if (this.en.includes(item)) {
@@ -127,7 +129,6 @@ class VigenereCipheringMachine {
               this.en.findIndex((ltr) => ltr == arrayMessage[i]) +
                 this.en.findIndex((ltr) => ltr == arraytotalKey[0])
             ];
-
           return cryptoLtr;
         } else {
           return item;
@@ -136,10 +137,8 @@ class VigenereCipheringMachine {
     }
   }
   encrypt(message, key) {
-    if (!message || !key) throw new Error("Incorrect arguments!");
-    //приводим длину ключа к длине сообщения
-    let totalKey = this.makeFullKey(message, key);
-    //формируем криптостроку
+    if (!message || !key) throw new Error("Incorrect arg!");
+    let totalKey = this.maketotalKey(message, key);
     let finishArray = this.makeFinishArray(message, totalKey);
     if (this.bool) {
       return finishArray.join("");
@@ -148,10 +147,8 @@ class VigenereCipheringMachine {
     }
   }
   decrypt(encryptedMessage, key) {
-    if (!encryptedMessage || !key) throw new Error("Incorrect arguments!");
-    //приводим длину ключа к длине сообщения
-    let totalKey = this.makeFullKey(encryptedMessage, key);
-    //формируем строку исходную
+    if (!encryptedMessage || !key) throw new Error("Incorrect arg!");
+    let totalKey = this.maketotalKey(encryptedMessage, key);
     let finishArray = this.makeFinishArray(
       encryptedMessage,
       totalKey,
@@ -164,6 +161,7 @@ class VigenereCipheringMachine {
     }
   }
 }
+
 
 module.exports = {
   VigenereCipheringMachine,
